@@ -10,6 +10,7 @@ librosa = "*"
 scikit-learn = "*"
 numpy = "*"
 pandas = "*"
+matplotlib = "*"
 
 [dev-packages]
 
