@@ -1,92 +1,39 @@
 # Speaker_recognition
 
+L'objectif de cette application est de mettre en place un système d'identification par reconnaissance vocale. 
+L'idée est d'empêcher l'usurpation d'identité (accès à des informations confidentielles, des lieux à accès restreints...) avec une méthode non intrusive et ergonomique.
 
+Pour illustrer ce système d'identification vocale, 3 classes sont distinguées :
+- "aissa" : désigne une personne dont l'accès est autorisé.
+- "marouan" : désigne une autre personne dont l'accès est autorisé.
+- "autre" : désigne tout autre personne dont l'accès n'est pas autorisé.
 
-## Getting started
+## Améliorations possibles
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Les résultats globaux sont assez bons (88% accuracy, 97% recall pour classe "autre"). Néanmoins, des améliorations sont possibles pour rendre le système encore plus fiable et plus ergonomique :
+- Les précisions pour les classes "Aissa" et "Marouan" sont respectivement de 87% et 83%. Cela signifie qu'il y a 3 chances sur 10 pour que quelqu'un réussisse à usurper l'identité d'Aissa et Marouan. Il faudrait améliorer cette métrique pour diminuer les chances d'usurpation d'identité.
+- Le recall pour la classe "Aissa" est de 76%, contre 84% pour la classe "Marouan". On peut éventuellement améliorer le recall pour la classe Aissa afin qu'il est moins besoin de répéter pour pouvoir s'identifier.
+- Le recall pour la classe "autre" (c'est-à-dire les personnes non autorisées) est de 97%, ce qui est un très bon résultat, mais il est peut-être possible de passer à 100% (ou du moins augmenter encore le recall) pour fiabiliser davantage le système.
+- La méthode pour s'identifier sur l'application nécessite d'avoir un fichier wav déjà enregistré ou d'enregistrer un vocal via un voice recorder et charger le fichier dans l'application.
+Il est préférable de pouvoir enregistrer directement l'audio via l'application (plus ergonomique).
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Solutions d'amélioration envisagées
 
-## Add your files
+### Pour les 3 premiers points d'amélioration (amélioration des métriques)
+Le modèle actuel utilisé est un modèle de machine learning Random Forest.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Considérant que la représentation de l'audio en spectrogramme se rapproche de celle d'une image, on peut émettre l'hypothèse qu'un algorithme de deep learning avec une architecture CNN permettra d'avoir une meilleure extraction des caractéristiques du son et donc une meilleure discrimination (et potentiellement une amélioration des métriques de classification).
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/marouan_boulli/speaker_recognition.git
-git branch -M main
-git push -uf origin main
-```
+Comme le deep learning nécessite en général une grande quantité de données d'entrainement (ce que nous ne possédons pas) pour extraire les caractéristiques discriminantes, il parait judicieux de faire du transfer learning en utilisant des algorithmes déjà entrainés sur un grand volume de données audio. En effet, ces algorithmes déjà entrainés sont capables d'extraire les caractéristiques haut niveau d'un audio, il suffira d'ajouter des couches externes à entrainer avec les audios enregistrés pour les 3 classes "aissa", "marouan" et "autre".
 
-## Integrate with your tools
+D'après ce papier de recherche (https://www.mdpi.com/2224-2708/10/4/72), VGGish et YAMNet sont les algorithmes donnant les meilleurs résultats pour de la classification d'audios. VGGish est très légèrement meilleur, mais YAMNet semble être plus utilisé (100k vs 10k téléchargements sur tensorflow hub) et il semble y avoir davantage de documentation montrant comment l'utiliser. C'est pourquoi il sera choisi pour le transfer learning.
 
-- [ ] [Set up project integrations](https://gitlab.com/marouan_boulli/speaker_recognition/-/settings/integrations)
+On considérera que l'amélioration est significative si les métriques augmentent de 5%, sauf pour le recall de la classe "autre" dont la valeur est déjà très élevée.
 
-## Collaborate with your team
+Charge de travail estimée : 1 jour et demi
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Pour le dernier point d'amélioration (amélioration de l'interface)
+Utiliser un outil javascript pour enregistrer directement un audio sur l'application.
+L'interface javascript MediaRecorder permet de faire cela assez facilement. Il faudra cependant récupérer le fichier audio enregistré et l'envoyer au serveur via une requête ajax.
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Charge de travail estimée : 1/2 jour
