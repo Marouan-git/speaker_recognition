@@ -10,6 +10,7 @@ import pandas as pd
 import scipy
 import scipy.signal
 import uuid
+from difflib import SequenceMatcher
 
 import speech_recognition as sr
 
@@ -97,7 +98,7 @@ def upload_file():
             result = r.recognize_google(srAudio, language="fr-FR")
         print(result)
         
-        if (result in ["sésame ouvre-toi", "sésame ouvre toi", "sezame ouvre-toi"]):
+        if (SequenceMatcher(None, 'sésame ouvre-toi', result).ratio() >= 0.7):
             X_eval = generate_dataset(pretraitment(audio), 22050)
 
             predictions = modele.predict(X_eval)
