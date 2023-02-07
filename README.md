@@ -32,8 +32,10 @@ On considérera que l'amélioration est significative si les métriques augmente
 
 Charge de travail estimée : 1 jour et demi
 
+
 ### Pour le dernier point d'amélioration (amélioration de l'interface)
 Utiliser un outil javascript pour enregistrer directement un audio sur l'application.
 L'interface javascript MediaRecorder permet de faire cela assez facilement. Il faudra cependant récupérer le fichier audio enregistré et l'envoyer au serveur via une requête ajax.
 
 Charge de travail estimée : 1/2 jour
+Charge effective : 1/2 jour

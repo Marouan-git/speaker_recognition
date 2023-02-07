@@ -14,8 +14,13 @@ matplotlib = "*"
 tensorflow = "*"
 keras = "*"
 flask = "*"
+tensorflow-hub = "*"
+tensorflow-io = "*"
+seaborn = "*"
+speechrecognition = "*"
 
 [dev-packages]
+notebook = "*"
 
 [requires]
 python_version = "3.9"
