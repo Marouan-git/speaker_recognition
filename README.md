@@ -8,6 +8,8 @@ Pour illustrer ce système d'identification vocale, 3 classes sont distinguées 
 - "marouan" : désigne une autre personne dont l'accès est autorisé.
 - "autre" : désigne tout autre personne dont l'accès n'est pas autorisé.
 
+A partir d'un enregistrement vocal, le système est capable de déterminer à quelle classe il est associé et ainsi décider d'accorder l'accès ou non.
+
 ## Améliorations possibles
 
 Des améliorations sont possibles pour rendre le système encore plus fiable et plus ergonomique :
@@ -28,9 +30,9 @@ Recall pour la classe "autre" (c'est-à-dire les personnes non autorisées) pour
 Précision pour la classe "autre".
 Eviter l'usurpation d'identité.
 
-Pour les classes "Aissa" et "Marouan", on portera une attention particulière au recall.
+Pour les classes "Aissa" et "Marouan", on porte une attention particulière au recall.
 
-Pour la classe "autre", on se concentrera sur le f1 score.
+Pour la classe "autre", on se concentre sur le f1 score.
 
 
 
